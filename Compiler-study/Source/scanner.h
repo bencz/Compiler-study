@@ -12,6 +12,7 @@ enum TokenType
 {
 	IDENTIFIER,
 	RESERVED_WORD,
+	HEX_CONST,
 	INT_CONST,
 	REAL_CONST,
 	STR_CONST,
@@ -60,6 +61,7 @@ public:
 	enum State 
 	{
         IDENTIFIER_ST,
+		HEX_ST,
         INTEGER_ST,
         REAL_FRACT_PART_ST,
         OPERATION_ST,
@@ -101,6 +103,7 @@ private:
     void EatBlockComment(istream& in, char& curr_char);
     void EatRealFractPart(istream& in, char& curr_char);
     void EatStrConst(istream& in, char& curr_char);
+	void EatHex(istream& in, char& curr_char);
 
 public:
 	Scanner(istream& input);

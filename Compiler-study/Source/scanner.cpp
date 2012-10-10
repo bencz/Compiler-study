@@ -7,6 +7,7 @@ const char* const TOKEN_DESCRIPTION[] =
 {
 	"IDENTIFIER",
 	"RESERVED_WORD",
+	"HEX_CONST",
 	"INT_CONST",
 	"REAL_CONST",
 	"STR_CONST",
@@ -17,10 +18,10 @@ const char* const TOKEN_DESCRIPTION[] =
 };
 
 // ************************
-// Reserved Words
+// Reserved words
 // ************************
 
-void ReservedWords::Add(char *value, TokenType type)
+void ReservedWords::Add(char* value, TokenType type)
 {
 	words.insert(pair<char*, TokenType>(value, type));
 }
@@ -28,89 +29,87 @@ void ReservedWords::Add(char *value, TokenType type)
 ReservedWords::ReservedWords()
 {
 	Add("absolute", RESERVED_WORD);
-	Add("absolute", RESERVED_WORD);
-    Add("and", OPERATION);
-    Add("array", RESERVED_WORD);
-    Add("asm", RESERVED_WORD);
-    Add("begin", RESERVED_WORD);
-    Add("case", RESERVED_WORD);
-    Add("const", RESERVED_WORD);
-    Add("constructor", RESERVED_WORD);
-    Add("destructor", RESERVED_WORD);
-    Add("div", OPERATION);
-    Add("do", RESERVED_WORD);
-    Add("downto", RESERVED_WORD);
-    Add("else", RESERVED_WORD);
-    Add("end", RESERVED_WORD);
-    Add("file", RESERVED_WORD);
-    Add("for", RESERVED_WORD);
-    Add("function", RESERVED_WORD);
-    Add("goto", RESERVED_WORD);
-    Add("if", RESERVED_WORD);
-    Add("implementation", RESERVED_WORD);
-    Add("in", RESERVED_WORD);
-    Add("inherited", RESERVED_WORD);
-    Add("inline", RESERVED_WORD);
-    Add("interface", RESERVED_WORD);
-    Add("label", RESERVED_WORD);
-    Add("mod", OPERATION);
-    Add("nil", RESERVED_WORD);
-    Add("not", OPERATION);
-    Add("object", OPERATION);
-    Add("of", RESERVED_WORD);
-    Add("or", OPERATION);
-    Add("on", RESERVED_WORD);
-    Add("operator", RESERVED_WORD);
-    Add("packed", RESERVED_WORD);
-    Add("procedure", RESERVED_WORD);
-    Add("program", RESERVED_WORD);
-    Add("record", RESERVED_WORD);
-    Add("repeat", RESERVED_WORD);
-    Add("reintroduce", RESERVED_WORD);
-    Add("set", RESERVED_WORD);
-    Add("self", RESERVED_WORD);
-    Add("shl", OPERATION);
-    Add("shr", OPERATION);
-    Add("string", RESERVED_WORD);
-    Add("then", RESERVED_WORD);
-    Add("to", RESERVED_WORD);
-    Add("type", RESERVED_WORD);
-    Add("unit", RESERVED_WORD);
-    Add("until", RESERVED_WORD);
-    Add("uses", RESERVED_WORD);
-    Add("var", RESERVED_WORD);
-    Add("while", RESERVED_WORD);
-    Add("with", RESERVED_WORD);
-    Add("xor", OPERATION);
-    Add("..", RESERVED_WORD);
-    Add(":=", OPERATION);
-    Add("-", OPERATION);
-    Add("+", OPERATION);
-    Add("*", OPERATION);
-    Add("/", OPERATION);
-    Add("[", OPERATION);
-    Add("]", OPERATION);
-    Add(";", DELIMITER);
-    Add(":", DELIMITER);
-    Add(",", DELIMITER);
-    Add(".", OPERATION);
-    Add("^", OPERATION);
-    Add("@", OPERATION);
-    Add("(", OPERATION);
-    Add(")", OPERATION);
-    Add(">", OPERATION);
-    Add("<", OPERATION);
-    Add("=", OPERATION);
-    Add(">=", OPERATION);
-    Add("<=", OPERATION);
-    Add("<>", OPERATION);
+	Add("and", OPERATION);
+	Add("array", RESERVED_WORD);
+	Add("asm", RESERVED_WORD);
+	Add("begin", RESERVED_WORD);
+	Add("case", RESERVED_WORD);
+	Add("const", RESERVED_WORD);
+	Add("constructor", RESERVED_WORD);
+	Add("destructor", RESERVED_WORD);
+	Add("div", OPERATION);
+	Add("do", RESERVED_WORD);
+	Add("downto", RESERVED_WORD);
+	Add("else", RESERVED_WORD);
+	Add("end", RESERVED_WORD);
+	Add("file", RESERVED_WORD);
+	Add("for", RESERVED_WORD);
+	Add("function", RESERVED_WORD);
+	Add("goto", RESERVED_WORD);
+	Add("if", RESERVED_WORD);
+	Add("implementation", RESERVED_WORD);
+	Add("in", RESERVED_WORD);
+	Add("inherited", RESERVED_WORD);
+	Add("inline", RESERVED_WORD);
+	Add("interface", RESERVED_WORD);
+	Add("label", RESERVED_WORD);
+	Add("mod", OPERATION);
+	Add("nil", RESERVED_WORD);
+	Add("not", OPERATION);
+	Add("object", OPERATION);
+	Add("of", RESERVED_WORD);
+	Add("or", OPERATION);
+	Add("on", RESERVED_WORD);
+	Add("operator", RESERVED_WORD);
+	Add("packed", RESERVED_WORD);
+	Add("procedure", RESERVED_WORD);
+	Add("program", RESERVED_WORD);
+	Add("record", RESERVED_WORD);
+	Add("repeat", RESERVED_WORD);
+	Add("reintroduce", RESERVED_WORD);
+	Add("set", RESERVED_WORD);
+	Add("self", RESERVED_WORD);
+	Add("shl", OPERATION);
+	Add("shr", OPERATION);
+	Add("string", RESERVED_WORD);
+	Add("then", RESERVED_WORD);
+	Add("to", RESERVED_WORD);
+	Add("type", RESERVED_WORD);
+	Add("unit", RESERVED_WORD);
+	Add("until", RESERVED_WORD);
+	Add("uses", RESERVED_WORD);
+	Add("var", RESERVED_WORD);
+	Add("while", RESERVED_WORD);
+	Add("with", RESERVED_WORD);
+	Add("xor", OPERATION);
+	Add("..", RESERVED_WORD);
+	Add(":=", OPERATION);
+	Add("-", OPERATION);
+	Add("+", OPERATION);
+	Add("*", OPERATION);
+	Add("/", OPERATION);
+	Add("[", OPERATION);
+	Add("]", OPERATION);
+	Add(";", DELIMITER);
+	Add(":", DELIMITER);
+	Add(",", DELIMITER);
+	Add(".", OPERATION);
+	Add("^", OPERATION);
+	Add("@", OPERATION);
+	Add("(", OPERATION);
+	Add(")", OPERATION);
+	Add(">", OPERATION);
+	Add("<", OPERATION);
+	Add("=", OPERATION);
+	Add(">=", OPERATION);
+	Add("<=", OPERATION);
+	Add("<>", OPERATION);
 }
 
 bool ReservedWords::Identify(char *value, TokenType& returned_type)
 {
-	map<string, TokenType>::iterator i = words.find(value);
-	if(i == words.end())
-		return false;
+	map<string, TokenType>::iterator i  = words.find(value);
+	if (i == words.end()) return false;
 	returned_type = i->second;
 	return true;
 }
@@ -119,16 +118,19 @@ bool ReservedWords::Identify(char *value, TokenType& returned_type)
 // Token
 // ************************
 
-ostream& operator<<(ostream& out, const Token& token)
+ostream& operator<<(ostream& out, const Token & token)
 {
-	out << token.GetLine() << ':' << token.GetPos() << ' ' << TOKEN_DESCRIPTION[token.GetType()]
-		<< ' ' << token.GetValue() << endl;
+	out << token.GetLine() << ':' << token.GetPos() << ' '<< TOKEN_DESCRIPTION[token.GetType()]
+	<< ' ' << token.GetValue() << endl;
 	return out;
 }
 
-Token::Token() : value(NULL) { }
+Token::Token():
+	value(NULL)
+{
+}
 
-Token::Token(char *value, TokenType type, int line, int pos)
+Token::Token(char* value, TokenType type, int line, int pos)
 {
 	this->value = strcpy(new char[strlen(value)+1], value);
 	this->type = type;
@@ -146,8 +148,7 @@ Token::Token(const Token& token)
 
 Token& Token::operator=(const Token& token)
 {
-	if(value != NULL)
-		delete(value);
+	if (value != NULL) delete(value);
 	value = strcpy(new char[strlen(token.value)+1], token.value);
 	type = token.type;
 	line = token.line;
@@ -184,9 +185,12 @@ int Token::GetLine() const
 // Scanner
 // ************************
 
-Scanner::exception::exception() : msg(NULL) { }
+Scanner::exception::exception():
+	msg(NULL)
+{
+}
 
-Scanner::exception::exception(const char* const msg) :
+Scanner::exception::exception(const char* const msg):
 	msg(strcpy(new char[strlen(msg) + 1], msg))
 {
 }
@@ -211,24 +215,22 @@ void Scanner::MakeToken(TokenType type)
 	buffer[bp] = '\0';
 	token = Token(buffer, type, first_line, first_pos);
 	bp = 0;
-	state = NONE_ST;		 
+	state = NONE_ST;
 }
 
 void Scanner::IdentifyAndMake()
 {
-	buffer_low[bp] = '\0';
+	buffer_low[bp]  = '\0';
 	TokenType t;
-	if(!reserved_words.Identify(buffer_low, t))
-		t = IDENTIFIER;
+	if (!reserved_words.Identify(buffer_low, t)) t = IDENTIFIER;
 	MakeToken(t);
 }
 
 bool Scanner::TryToIdentify()
 {
-	buffer_low[bp] = '\0';
+	buffer_low[bp]  = '\0';
 	TokenType t;
-
-	if(reserved_words.Identify(buffer_low, t))
+	if (reserved_words.Identify(buffer_low, t))
 	{
 		MakeToken(t);
 		return true;
@@ -237,14 +239,14 @@ bool Scanner::TryToIdentify()
 		return false;
 }
 
-void Scanner::Error(const char *msg) const
+void Scanner::Error(const char* msg) const
 {
 	stringstream s;
 	s << line << ':' << pos << " ERROR " << msg;
-	throw(Scanner::exception(s.str().c_str() ));
+	throw( Scanner::exception( s.str().c_str() ) ) ;
 }
 
-Scanner::Scanner(istream& input) : 
+Scanner::Scanner(istream& input):
 	in(input),
 	pos(0),
 	line(1),
@@ -260,17 +262,16 @@ Token Scanner::GetToken()
 
 Token Scanner::NextToken()
 {
-	while(ProcessNextCharacter());
+	while (ProcessNextCharacter());
 	return token;
 }
 
 void Scanner::EatLineComment(istream& in, char& curr_char)
 {
 	char& c = curr_char;
-	if(c == '/' && (char)in.peek() == '/')
+	if (c =='/' && (char)in.peek() == '/')
 	{
-		do
-		{
+		do {
 			c = ExtractChar();
 		} while (c != '\n' && !in.eof());
 	}
@@ -279,19 +280,17 @@ void Scanner::EatLineComment(istream& in, char& curr_char)
 void Scanner::EatBlockComment(istream& in, char& curr_char)
 {
 	char& c = curr_char;
-	if(c == '{')
+	if (c == '{')
 	{
-		do
-		{
+		do {
 			c = in.get();
 			++pos;
-			if(c == '\n')
+			if (c == '\n')
 			{
 				++line;
 				pos = 0;
 			}
-			if(in.eof())
-				Error("end of file in comment");
+			if (in.eof()) Error("end of file in comment");
 		} while (c != '}');
 		c = ExtractChar();
 	}
@@ -300,30 +299,28 @@ void Scanner::EatBlockComment(istream& in, char& curr_char)
 void Scanner::EatRealFractPart(istream& in, char& curr_char)
 {
 	char& c = curr_char;
-	while(isdigit(c))
+	while (isdigit(c))
 	{
 		AddToBuffer(c);
 		c = ExtractChar();
 	}
-	if(c == 'e' || c == 'E')
+	if (c == 'e' || c == 'E')
 	{
 		AddToBuffer(c);
 		c = ExtractChar();
-		if(c == '+' || c == '-')
+		if (c == '+' || c == '-')
 		{
 			AddToBuffer(c);
 			c = ExtractChar();
 		}
-		if(!isdigit(c))
-			Error("Illegal character, should be number");
+		if (!isdigit(c))
+			Error("illegal character, should be number");
 		else
-		{
 			do
 			{
 				AddToBuffer(c);
 				c = ExtractChar();
 			} while (isdigit(c));
-		}
 	}
 	MakeToken(REAL_CONST);
 }
@@ -332,13 +329,13 @@ void Scanner::EatStrConst(istream& in, char& curr_char)
 {
 	char& c = curr_char;
 	--bp;
-	while(c != '\'')
+	while (c != '\'')
 	{
-		if(in.eof())
+		if (in.eof())
 			Error("end of file in string");
-		if(c != '\n')
+		if (c != '\n')
 			AddToBuffer(c);
-		else if(buffer[bp - 1] != '\\')
+		else if (buffer[bp - 1] != '\\')
 			Error("end of line in string");
 		else
 		{
@@ -347,24 +344,38 @@ void Scanner::EatStrConst(istream& in, char& curr_char)
 			--bp;
 		}
 		int count = 0;
-		c = in.get();
-		++pos;
-		while(c == '\'' && !in.eof())
+		c = ExtractChar();
+		while (c == '\'' && !in.eof())
 		{
 			++count;
-			if(count % 2 == 0)
-				AddToBuffer(c);
+			if (count % 2 == 0) AddToBuffer(c);
 			c = in.get();
 			++pos;
 		}
-		if(count % 2)
-			break;
+		if (count % 2) break;
 	}
-	if(!in.eof())
+	if (!in.eof())
 	{
 		c = ExtractChar();
 	}
 	MakeToken(STR_CONST);
+}
+
+void Scanner::EatHex(istream& in, char& curr_char)
+{
+	char& c = curr_char;
+	bool read = false;
+
+	while(isdigit(c) || ('a' <= tolower(c) && tolower(c) <= 'f'))
+	{
+		read = true;
+		AddToBuffer(c);
+		c = ExtractChar();
+	}
+	if(!read)
+		Error("invalid integer expression");
+	else
+		MakeToken(HEX_CONST);
 }
 
 char Scanner::ExtractChar()
@@ -376,9 +387,8 @@ char Scanner::ExtractChar()
 bool Scanner::ProcessNextCharacter()
 {
 	bool matched = false;
-
 	char c;
-	if(!in.eof())
+	if (!in.eof())
 	{
 		c = ExtractChar();
 		EatLineComment(in, c);
@@ -386,24 +396,16 @@ bool Scanner::ProcessNextCharacter()
 	}
 	switch (state)
 	{
-	case Scanner::IDENTIFIER_ST:
-		if(isalnum(c) || c == '_')
-		{
-			AddToBuffer(c);
-		}
-		else
-		{
-			IdentifyAndMake();
-			matched = true;
-		}
+	case EOF_ST:
+		MakeToken(END_OF_FILE);
+		matched = true;
 		break;
-
-	case Scanner::INTEGER_ST:
-		if(isdigit(c))
+	case INTEGER_ST:
+		if (isdigit(c))
 		{
 			AddToBuffer(c);
 		}
-		else if(c == '.')
+		else if (c == '.')
 		{
 			AddToBuffer(c);
 			state = REAL_FRACT_PART_ST;
@@ -414,49 +416,55 @@ bool Scanner::ProcessNextCharacter()
 			matched = true;
 		}
 		break;
-
-	case Scanner::REAL_FRACT_PART_ST:
+	case REAL_FRACT_PART_ST:
 		EatRealFractPart(in, c);
 		matched = true;
 		break;
-
-	case Scanner::OPERATION_ST:
-		if(buffer[0] == '\'')
+	case HEX_ST:
+		EatHex(in, c);
+		matched = true;
+		break;
+	case IDENTIFIER_ST:
+		if (isalnum(c) || c == '_')
+		{
+			AddToBuffer(c);
+		}
+		else
+		{
+			IdentifyAndMake();
+			matched = true;
+		}
+		break;
+	case OPERATION_ST:
+		if (buffer[0] == '\'')
 		{
 			EatStrConst(in, c);
 			matched = true;
 		}
 		else
 		{
-			if(!in.eof() && !isalnum(c) & c != '_' && !isspace(c))
+			if (!in.eof() && !isalnum(c) & c != '_' && !isspace(c))
 			{
 				AddToBuffer(c);
-				if(TryToIdentify())
+				if (TryToIdentify())
 				{
 					matched = true;
 					c = ExtractChar();
 				}
 				else
-				{
 					--bp;
-				}
 			}
-			if(!matched)
-				if(TryToIdentify())
+			if (!matched)
+				if (TryToIdentify())
 					matched = true;
 				else
 					Error("illegal expression");
 		}
 		break;
-
-	case Scanner::EOF_ST:
-		MakeToken(END_OF_FILE);
-		matched = true;
-		break;
 	}
-	if(state == NONE_ST)
+	if (state == NONE_ST)
 	{
-		if(c == '\n')
+		if (c == '\n')
 		{
 			++line;
 			pos = 0;
@@ -465,19 +473,23 @@ bool Scanner::ProcessNextCharacter()
 		{
 			first_pos = pos;
 			first_line = line;
-			if(in.eof())
+			if (in.eof())
 			{
 				state = EOF_ST;
 			}
-			else if(!isspace(c))
+			else if (!isspace(c))
 			{
-				if(isspace(c) || c == '_')
+				if (isalpha(c) || c == '_')
 				{
 					state = IDENTIFIER_ST;
 				}
-				else if(isdigit(c))
+				else if (isdigit(c))
 				{
 					state = INTEGER_ST;
+				}
+				else if(c == '$')
+				{
+					state = HEX_ST;
 				}
 				else
 				{

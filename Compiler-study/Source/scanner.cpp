@@ -377,7 +377,115 @@ bool Scanner::ProcessNextCharacter()
 {
 	bool matched = false;
 
-	// ???? o.O
+	char c;
+	if(!in.eof())
+	{
+		c = ExtractChar();
+		EatLineComment(in, c);
+		EatBlockComment(in, c);
+	}
+	switch (state)
+	{
+	case Scanner::IDENTIFIER_ST:
+		if(isalnum(c) || c == '_')
+		{
+			AddToBuffer(c);
+		}
+		else
+		{
+			IdentifyAndMake();
+			matched = true;
+		}
+		break;
 
+	case Scanner::INTEGER_ST:
+		if(isdigit(c))
+		{
+			AddToBuffer(c);
+		}
+		else if(c == '.')
+		{
+			AddToBuffer(c);
+			state = REAL_FRACT_PART_ST;
+		}
+		else
+		{
+			MakeToken(INT_CONST);
+			matched = true;
+		}
+		break;
+
+	case Scanner::REAL_FRACT_PART_ST:
+		EatRealFractPart(in, c);
+		matched = true;
+		break;
+
+	case Scanner::OPERATION_ST:
+		if(buffer[0] == '\'')
+		{
+			EatStrConst(in, c);
+			matched = true;
+		}
+		else
+		{
+			if(!in.eof() && !isalnum(c) & c != '_' && !isspace(c))
+			{
+				AddToBuffer(c);
+				if(TryToIdentify())
+				{
+					matched = true;
+					c = ExtractChar();
+				}
+				else
+				{
+					--bp;
+				}
+			}
+			if(!matched)
+				if(TryToIdentify())
+					matched = true;
+				else
+					Error("illegal expression");
+		}
+		break;
+
+	case Scanner::EOF_ST:
+		MakeToken(END_OF_FILE);
+		matched = true;
+		break;
+	}
+	if(state == NONE_ST)
+	{
+		if(c == '\n')
+		{
+			++line;
+			pos = 0;
+		}
+		else
+		{
+			first_pos = pos;
+			first_line = line;
+			if(in.eof())
+			{
+				state = EOF_ST;
+			}
+			else if(!isspace(c))
+			{
+				if(isspace(c) || c == '_')
+				{
+					state = IDENTIFIER_ST;
+				}
+				else if(isdigit(c))
+				{
+					state = INTEGER_ST;
+				}
+				else
+				{
+					state = OPERATION_ST;
+				}
+				AddToBuffer(c);
+			}
+		}
+	}
 	return !matched;
 }

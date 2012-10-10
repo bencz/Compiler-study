@@ -4,6 +4,8 @@
 #include <sstream>
 #include <exception>
 
+#include "scanner.h"
+
 using namespace std;
 
 class CompilerException : std::exception
@@ -73,6 +75,9 @@ ConsoleKeys ParseParameters(int argc, char* argv[], list<string> & returned_file
 
 void PrintHelp()
 {
+	cout << "Usage: compiler [options] source.pas\n\
+    -l  show lexems stream\
+	";
 }
 
 int main(int argc, char **argv)
@@ -93,15 +98,26 @@ int main(int argc, char **argv)
 			if(!in.good())
 				throw CompilerException("can't open file");
 			files.pop_front();
-			// now the problem start ;(
-			// Start scanner here
-			// pass for scanner the file handle (:
+			Scanner scan(in);
+
+			for(Token t; t.GetType() != END_OF_FILE;)
+			{
+				cout << ( t = scan.NextToken() );
+			}
 		}
+	}
+	catch(Scanner::exception e)
+	{
+		cout << e.what() << endl;
+	}
+	catch(CompilerException e)
+	{
+		cout << e.what() << endl;
 	}
 	catch(exception e)
 	{
-		// temp
 		cout << e.what() << endl;
 	}
+	getchar();
 	return 0;
 }

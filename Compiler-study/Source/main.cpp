@@ -2,9 +2,11 @@
 #include <fstream>
 #include <list>
 #include <sstream>
+#include <string.h>
 #include <exception>
 
 #include "scanner.h"
+//#include "parser.h"
 
 using namespace std;
 
@@ -82,6 +84,17 @@ void PrintHelp()
 
 int main(int argc, char **argv)
 {
+	// Teste Sector
+
+	/*stringstream ss;
+    ss << " 5 + (4*5) + 4 div 3";
+    Scanner scan(ss);
+    Parser p(scan);
+    p << (cout);
+    return 0;*/
+
+	// End Teste Sector
+
 	ConsoleKeys keys;
 	list<string> files;
 	if(argc == 1)

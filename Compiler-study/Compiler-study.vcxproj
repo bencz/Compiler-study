@@ -11,10 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\exception.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\parser.cpp" />
     <ClCompile Include="Source\scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\exception.h" />
+    <ClInclude Include="Source\parser.h" />
     <ClInclude Include="Source\scanner.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

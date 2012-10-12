@@ -3,66 +3,139 @@
 
 #include <istream>
 #include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 #include <map>
 #include <string.h>
 #include <sstream>
-
 #include "exception.h"
 
 using namespace std;
 
-enum TokenType
-{
+enum TokenType{
 	IDENTIFIER,
 	RESERVED_WORD,
-	HEX_CONST,
 	INT_CONST,
 	REAL_CONST,
 	STR_CONST,
 	OPERATION,
 	DELIMITER,
-	END_OF_FILE
+	END_OF_FILE,
+	UNDEFINED
 };
 
-class ReservedWords
-{
+enum TokenValue{
+	TOK_AND,
+	TOK_ARRAY,
+	TOK_BEGIN,
+	TOK_CASE,
+	TOK_CONST,
+	TOK_DIV,
+	TOK_DO,
+	TOK_DOWNTO,
+	TOK_ELSE,
+	TOK_END,
+	TOK_FILE,
+	TOK_FOR,
+	TOK_FUNCTION,
+	TOK_IF,
+	TOK_IN,
+	TOK_MOD,
+	TOK_NIL,
+	TOK_NOT,
+	TOK_OF,
+	TOK_OR,
+	TOK_PROCEDURE,
+	TOK_RECORD,
+	TOK_REPEAT,
+	TOK_SET,
+	TOK_SHL,
+	TOK_SHR,
+	TOK_STRING,
+	TOK_THEN,
+	TOK_TO,
+	TOK_TYPE,
+	TOK_UNTIL,
+	TOK_VAR,
+	TOK_WHILE,
+	TOK_WITH,
+	TOK_XOR,
+	TOK_DOUBLE_DOT,
+	TOK_ASSIGN,
+	TOK_MINUS,
+	TOK_PLUS,
+	TOK_MULT,
+	TOK_DIVISION,
+	TOK_BRACKETS_SQUARE_LEFT,
+	TOK_BRACKETS_SQUARE_RIGHT,
+	TOK_SEMICOLON,
+	TOK_COLON,
+	TOK_COMMA,
+	TOK_DOT,
+	TOK_CAP,
+	TOK_DOG,
+	TOK_BRACKETS_LEFT,
+	TOK_BRACKETS_RIGHT,
+	TOK_LESS,
+	TOK_GREATER,
+	TOK_EQUAL,
+	TOK_LESS_OR_EQUAL,
+	TOK_GREATER_OR_EQUAL,
+	TOK_NOT_EQUAL,
+	TOK_UNRESERVED,
+	TOK_INTEGER, 
+	TOK_REAL
+};
+
+extern const string TOKEN_TO_STR[];
+extern std::ostream& PrintSpaces(std::ostream& o, int offset);
+
+class Token;
+
+ostream& operator<<(ostream& out, const Token& token);
+
+class ReservedWords{
 private:
-	map<string, TokenType> words;
-	void Add(char* value, TokenType type);
+	map<string, pair<TokenType, TokenValue> > words;
+	void Add(string name, TokenType type, TokenValue value);
 public:
 	ReservedWords();
-	bool Identify(string& str, TokenType& returned_type);
+	bool Identify(string& str, TokenType& returned_type, TokenValue& returned_value);
 };
 
-class Token
-{
+class Token{
 private:
 	TokenType type;
+	TokenValue value;
 	int line;
 	int pos;
-	char* value;
-
+	char* name;
 public:
+	bool IsRelationalOp() const;
+	bool IsAddingOp() const;
+	bool IsMultOp() const;
+	bool IsUnaryOp() const;
+	bool IsFactorOp() const;
+	bool IsConst() const;
+	bool IsVar() const;
+	bool IsConstVar() const;
 	Token();
-	Token(const char* value, TokenType type, int line, int pos);
+	Token(const char* name_, TokenType type_, TokenValue value_, int line_, int pos_);
 	Token(const Token& token);
 	Token& operator=(const Token& token);
 	~Token();
 	TokenType GetType() const;
-	const char* GetValue() const;
+	TokenValue GetValue() const;
+	const char* GetName() const;
 	int GetPos() const;
 	int GetLine() const;
+	void NameToLowerCase();
+	int GetIntValue() const;
 };
 
-ostream& operator<<(ostream& out, const Token& token);
-
-class Scanner
-{
+class Scanner{
 public:
-	static const int MAX_TOKEN_LENGTH = 256;
-
-	enum State
-	{
+	enum State {
 		IDENTIFIER_ST,
 		HEX_ST,
 		INTEGER_ST,
@@ -70,7 +143,6 @@ public:
 		EOF_ST,
 		NONE_ST
 	};
-
 private:
 	ReservedWords reserved_words;
 	Token* currentToken;
@@ -86,7 +158,7 @@ private:
 	State state;
 	void AddToBuffer(char c);
 	void ReduceBuffer();
-	void MakeToken(TokenType type);
+	void MakeToken(TokenType type, TokenValue value = TOK_UNRESERVED);
 	void IdentifyAndMake();
 	bool TryToIdentify();
 	void Error(const char* msg) const;
@@ -100,7 +172,6 @@ private:
 	void EatInteger();
 	void EatIdentifier();
 	void EatOperation();
-
 public:
 	Scanner(istream& input);
 	Token GetToken();

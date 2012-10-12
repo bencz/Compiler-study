@@ -1,26 +1,25 @@
 #include <iostream>
 #include <fstream>
 #include <list>
-#include <sstream>
-#include <string.h>
-
 #include "scanner.h"
 #include "parser.h"
+#include <sstream>
+#include <string.h>
 #include "exception.h"
-
-using namespace std;
 
 void PrintHelp()
 {
 	cout << "Usage: compiler [option] source.pas\n\
 			\n\
 			avaible options are:\n\
+			\t-b\tprint Both syntax tree and symTable\n\
 			\t-h\tshow this message\n\
-			\t-l\tshow lexems stream\n\
-			\t-s\tsimple parse\n";
+			\t-l\tshow Lexems stream\n\
+			\t-s\tprint Syntax tree\n\
+			\t-t\tprint symTable\n";    
 }
 
-//char *my_argv[] = {"compiler.exe", "-l", "test/16.in" };
+string my_argv[] = {"compiler.exe", "-l", "test/16.in" };
 
 int main(int argc, char* argv[])
 {
@@ -54,11 +53,26 @@ int main(int argc, char* argv[])
 			if (!argv[1][1] || argv[1][2]) throw CompilerException("invalid option");
 			switch (argv[1][1])
 			{
+			case 'b':
+				{
+					Scanner scan(in);
+					Parser parser(scan);
+					parser.PrintSymTable(std::cout);
+					parser.PrintSyntaxTree(std::cout);
+				}
+				break;
 			case 's':
 				{
 					Scanner scan(in);
 					Parser parser(scan);
-					parser<<(cout);
+					parser.PrintSyntaxTree(std::cout);
+				}
+				break;
+			case 't':
+				{
+					Scanner scan(in);
+					Parser parser(scan);                        
+					parser.PrintSymTable(std::cout);
 				}
 				break;
 			case 'l':

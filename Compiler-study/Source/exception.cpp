@@ -1,10 +1,14 @@
 #include "exception.h"
 
-CompilerException::CompilerException() : err(NULL) { }
+CompilerException::CompilerException():
+	err(NULL)
+{
+}
 
-CompilerException::CompilerException(const char* const msg):
-	err(strcpy(new char[strlen(msg) + 1], msg))
-{ }
+CompilerException::CompilerException(const std::string& msg):
+	err(strcpy(new char[msg.size() + 1], msg.c_str()))
+{
+}
 
 const char* CompilerException::what() const throw()
 {
@@ -13,6 +17,5 @@ const char* CompilerException::what() const throw()
 
 CompilerException::~CompilerException() throw()
 {
-	if (err != NULL)
-		delete err;
+	if (err != NULL) delete err;
 }

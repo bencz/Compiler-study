@@ -2,8 +2,9 @@
 
 CompilerException::CompilerException() : err(NULL) { }
 
-CompilerException::CompilerException(const char* const msg) :
-	err(strcpy(new char[strlen(msg) + 1], msg)) { }
+CompilerException::CompilerException(const char* const msg):
+	err(strcpy(new char[strlen(msg) + 1], msg))
+{ }
 
 const char* CompilerException::what() const throw()
 {
@@ -12,6 +13,6 @@ const char* CompilerException::what() const throw()
 
 CompilerException::~CompilerException() throw()
 {
-	if(err != NULL)
+	if (err != NULL)
 		delete err;
 }

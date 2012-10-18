@@ -9,11 +9,13 @@
 
 void PrintHelp()
 {
-	cout << "Usage: compiler [option] source.pas\n\
+	cout << "Pascal Compiler\n\
+			Usage: compiler [option] source.pas\n\
 			\n\
 			avaible options are:\n\
-			\t-b\tprint Both syntax tree and symTable\n\
+			\t-b\tprint Both syntax tree and symtable\n\
 			\t-h\tshow this message\n\
+			\t-g\tGenerate asm code\n\
 			\t-l\tshow Lexems stream\n\
 			\t-s\tprint Syntax tree\n\
 			\t-t\tprint symTable\n";    
@@ -73,6 +75,13 @@ int main(int argc, char* argv[])
 					Scanner scan(in);
 					Parser parser(scan);                        
 					parser.PrintSymTable(std::cout);
+				}
+				break;
+			case 'g':
+				{
+					Scanner scan(in);
+					Parser parser(scan);                        
+					parser.Generate(std::cout);
 				}
 				break;
 			case 'l':

@@ -5,21 +5,22 @@
 #include "scanner.h"
 #include "sym_table.h"
 #include "syntax_node.h"
+#include "generator.h"
 #include "exception.h"
 #include <string.h>
 #include <vector>
 #include <utility>
 #include <stack>
-
 #include <ostream>
 
 class Parser{
 private:
-	SyntaxNode* syntax_tree;
+	NodeStatement* body;
 	Scanner& scan;
-	SynTable top_sym_table;
+	SymTable top_sym_table;
 	SymType* top_type_bool;
-	std::vector<SynTable*> sym_table_stack;
+	std::vector<SymTable*> sym_table_stack;
+	AsmCode asm_code;
 	SyntaxNode* ConvertType(SyntaxNode* node, const SymType* type);
 	void TryToConvertType(SyntaxNode*& first, SyntaxNode*& second);
 	void TryToConvertType(SyntaxNode*& expr, const SymType* type);
@@ -29,7 +30,8 @@ private:
 	void CheckNextTokOrDie(TokenValue tok_val);    
 	SyntaxNode* GetIntExprOrDie();
 	SyntaxNode* ParseConstants();
-	SyntaxNode* ParseFunctionCall(SymProc* funct_name);
+	SyntaxNode* ParseFunctionCall(SymProc* funct_if);
+	SyntaxNode* ParseWriteFunctCall();
 	SyntaxNode* ParseRecordAccess(SyntaxNode* record);
 	SyntaxNode* ParseArrayAccess(SyntaxNode* array);
 	SyntaxNode* ParseFactor();
@@ -64,6 +66,7 @@ public:
 	Parser(Scanner& scanner);
 	void PrintSyntaxTree(ostream& o);
 	void PrintSymTable(ostream& o);
+	void Generate(ostream& o);
 };
 
 #endif

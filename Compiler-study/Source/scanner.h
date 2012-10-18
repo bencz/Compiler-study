@@ -84,7 +84,8 @@ enum TokenValue{
 	TOK_NOT_EQUAL,
 	TOK_UNRESERVED,
 	TOK_INTEGER, 
-	TOK_REAL
+	TOK_REAL,
+	TOK_WRITE
 };
 
 extern const string TOKEN_TO_STR[];
@@ -120,8 +121,9 @@ public:
 	bool IsVar() const;
 	bool IsConstVar() const;
 	Token();
-	Token(const char* name_, TokenType type_, TokenValue value_, int line_, int pos_);
+	Token(const char* name_, TokenType type_, TokenValue value_, int line_ = -1, int pos_ = -1);
 	Token(const Token& token);
+	Token(TokenValue val); 
 	Token& operator=(const Token& token);
 	~Token();
 	TokenType GetType() const;

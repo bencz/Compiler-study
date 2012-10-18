@@ -62,25 +62,33 @@ void Parser::TryToConvertTypeOrDie(SyntaxNode*& expr, const SymType* type, Token
 
 void Parser::PrintSyntaxTree(ostream& o)
 {
-	if (syntax_tree != NULL) syntax_tree->Print(o, 0);
+	body->Print(o, 0);
 }
 
 void Parser::PrintSymTable(ostream& o)
 {
-	//    for (std::vector<SynTable*>::const_iterator it = sym_table_stack.begin(); it != sym_table_stack.end(); ++it)
+	//    for (std::vector<SymTable*>::const_iterator it = sym_table_stack.begin(); it != sym_table_stack.end(); ++it)
 	//        (*it)->Print(o);
-	sym_table_stack.back()->Print(o, 0);
+	if (body != NULL) sym_table_stack.back()->Print(o, 0);
+}
+
+void Parser::Generate(ostream& o)
+{
+	sym_table_stack.back()->GenerateDeclarations(asm_code);
+	asm_code.AddCmd(".globl main\nmain:\n");
+	body->Generate(asm_code);
+	asm_code.Print(o);
 }
 
 Parser::Parser(Scanner& scanner):
-	syntax_tree(NULL),
+	body(NULL),
 	scan(scanner)
 {
 	scan.NextToken();
 	top_sym_table.Add(top_type_int);
 	top_sym_table.Add(top_type_real);
 	sym_table_stack.push_back(&top_sym_table);
-	sym_table_stack.push_back(new SynTable());
+	sym_table_stack.push_back(new SymTable());
 	Parse();
 }
 
@@ -111,7 +119,7 @@ SymType* Parser::ParseArrayType()
 SymType* Parser::ParseRecordType()
 {
 	CheckTokOrDie(TOK_RECORD);
-	sym_table_stack.push_back(new SynTable);
+	sym_table_stack.push_back(new SymTable);
 	ParseVarDeclarations(false);
 	SymType* res = new SymTypeRecord(sym_table_stack.back());
 	sym_table_stack.pop_back();
@@ -170,7 +178,7 @@ void Parser::ParseVarDeclarations(bool is_global)
 			if (is_global)
 				sym_table_stack.back()->Add(new SymVarGlobal(*it, type));
 			else
-				sym_table_stack.back()->Add(new SymVarLocal(*it, type));
+				sym_table_stack.back()->Add(new SymVarLocal(*it, type, sym_table_stack.back()->GetLocalsSize()));
 		CheckTokOrDie(TOK_SEMICOLON);
 	}
 }
@@ -235,7 +243,7 @@ void Parser::ParseFunctionParameters(SymProc* funct)
 		const SymType* type = (SymType*)FindSymbolOrDie(scan.GetToken(), SYM_TYPE, "type identifier expected");
 		for (vector<Token>::iterator it = v.begin(); it != v.end(); ++it)
 		{
-			SymVarParam* param = new SymVarParam(*it, type, by_ref);
+			SymVarParam* param = new SymVarParam(*it, type, by_ref, sym_table_stack.back()->GetParamsSize() + 8);
 			sym_table_stack.back()->Add(param);
 			funct->AddParam(param);
 		}
@@ -256,7 +264,7 @@ void Parser::ParseFunctionDefinition()
 	else
 		res = new SymFunct(name);
 	sym_table_stack.back()->Add(res);
-	sym_table_stack.push_back(new SynTable);
+	sym_table_stack.push_back(new SymTable);
 	res->AddSymTable(sym_table_stack.back());
 	scan.NextToken();
 	if (scan.GetToken().GetValue() == TOK_BRACKETS_LEFT) ParseFunctionParameters(res);
@@ -266,7 +274,6 @@ void Parser::ParseFunctionDefinition()
 		const SymType* type = (SymType*)FindSymbolOrDie(scan.GetToken(), SYM_TYPE, "type identifier expected");
 		scan.NextToken();
 		((SymFunct*)res)->AddResultType(type);
-		sym_table_stack.back()->Add(new SymVar(Token("Result", IDENTIFIER, TOK_UNRESERVED, -1, -1), type));
 	}
 	CheckTokOrDie(TOK_SEMICOLON);
 	ParseDeclarations(false);
@@ -386,7 +393,7 @@ NodeStatement* Parser::ParseAssignStatement()
 const Symbol* Parser::FindSymbol(Symbol* sym)
 {
 	const Symbol* res = NULL;
-	for (std::vector<SynTable*>::const_reverse_iterator it = sym_table_stack.rbegin();
+	for (std::vector<SymTable*>::const_reverse_iterator it = sym_table_stack.rbegin();
 		it != sym_table_stack.rend() && res == NULL; ++it)
 	{
 		res = (*it)->Find(sym);
@@ -418,7 +425,7 @@ void Parser::Parse()
 {
 	ParseDeclarations(true);
 	if (scan.GetToken().GetValue() != TOK_BEGIN) Error("'begin' expected");
-	syntax_tree = ParseStatement();
+	body = ParseStatement();
 	if (scan.GetToken().GetValue() != TOK_DOT) Error("'.' expected");
 }
 
@@ -475,13 +482,39 @@ SyntaxNode* Parser::ParseFunctionCall(SymProc* funct_name)
 	return funct;
 }
 
+SyntaxNode* Parser::ParseWriteFunctCall()
+{
+	CheckTokOrDie(TOK_WRITE);
+	NodeWriteCall* write = new NodeWriteCall();
+	if (scan.GetToken().GetValue() == TOK_BRACKETS_LEFT)
+	{
+		scan.NextToken();
+		while (scan.GetToken().GetValue() != TOK_BRACKETS_RIGHT)
+		{
+			Token err_tok = scan.GetToken();
+			SyntaxNode* arg = ParseRelationalExpr();
+			if (arg == NULL) Error("illegal expression");
+			if (scan.GetToken().GetValue() == TOK_COMMA)
+				scan.NextToken();
+			else if (scan.GetToken().GetValue() != TOK_BRACKETS_RIGHT)
+				Error(", expected");
+			const SymType* type = arg->GetSymType();
+			if (type != top_type_int && type != top_type_real && type != top_type_str )
+				Error("cant write variables of this type ", err_tok);
+			write->AddArg(arg);
+		}
+		scan.NextToken();
+	}
+	return write;
+}
+
 SyntaxNode* Parser::ParseConstants()
 {
 	Token token = scan.GetToken();
 	SymType* type = NULL;
 	if (token.GetType() == INT_CONST) type = top_type_int;
 	else if (token.GetType() == REAL_CONST) type = top_type_real;
-	else Error("operations on string const not implemented");
+	else type = top_type_str;
 	scan.NextToken();
 	return new NodeVar(new SymVarConst(token, type));
 }
@@ -492,7 +525,8 @@ SyntaxNode* Parser::ParseRecordAccess(SyntaxNode* record)
 	Token field = scan.GetToken();
 	if (field.GetType() != IDENTIFIER) Error("identifier expected after '.'");
 	scan.NextToken();
-	if (!(record->GetSymType()->GetClassName() & SYM_TYPE_RECORD)) Error("illegal qualifier", field);
+	if (!(record->GetSymType()->GetClassName() & SYM_TYPE_RECORD))
+		Error("illegal qualifier", field);
 	return new NodeRecordAccess(record, field);
 }
 
@@ -503,7 +537,8 @@ SyntaxNode* Parser::ParseArrayAccess(SyntaxNode* array)
 	while (true)
 	{
 		SyntaxNode* index = GetIntExprOrDie();
-		if (!(array->GetSymType()->GetClassName() & SYM_TYPE_ARRAY)) Error("array expected before '[' token", err_tok);
+		if (!(array->GetSymType()->GetClassName() & SYM_TYPE_ARRAY))
+			Error("array expected before '[' token", err_tok);
 		array = new NodeArrayAccess(array, index);
 		if (scan.GetToken().GetValue() == TOK_COMMA) scan.NextToken();
 		else if (scan.GetToken().GetValue() == TOK_BRACKETS_SQUARE_RIGHT)
@@ -532,8 +567,8 @@ SyntaxNode* Parser::ParseFactor()
 		if (left == NULL) Error("illegal expression");
 		CheckTokOrDie(TOK_BRACKETS_RIGHT);
 	}
-	else
-	{
+	else if (scan.GetToken().GetValue() == TOK_WRITE) left = ParseWriteFunctCall();
+	else {
 		if (scan.GetToken().GetType() != IDENTIFIER) return NULL;
 		const Symbol* sym = FindSymbolOrDie(scan.GetToken(), SymbolClass(SYM_VAR | SYM_PROC), "identifier not found");
 		if (sym->GetClassName() & SYM_VAR)
@@ -585,7 +620,18 @@ SyntaxNode* Parser::ParseMultiplyingExpr()
 		scan.NextToken();
 		SyntaxNode* right = ParseUnaryExpr();
 		if (right == NULL) Error("illegal expression");
-		TryToConvertTypeOrDie(left, right, op);
+		if (op.GetValue() == TOK_DIVISION)
+		{
+			TryToConvertTypeOrDie(left, top_type_real, op);
+			TryToConvertTypeOrDie(right, top_type_real, op);
+		}
+		else if (op.GetValue() == TOK_DIV || op.GetValue() == TOK_MOD)
+		{
+			TryToConvertTypeOrDie(left, top_type_int, op);
+			TryToConvertTypeOrDie(right, top_type_int, op);
+		}
+		else
+			TryToConvertTypeOrDie(left, right, op);       
 		left = new NodeBinaryOp(op, left, right);
 		op = scan.GetToken();
 	}
@@ -634,6 +680,7 @@ void Parser::Error(string msg)
 void Parser::Error(string msg, Token err_pos_tok)
 {
 	stringstream s;
-	s << err_pos_tok.GetLine() << ':' << err_pos_tok.GetPos() << " ERROR at '" << err_pos_tok.GetName() << "': " << msg;
+	s << err_pos_tok.GetLine() << ':' << err_pos_tok.GetPos()
+		<< " ERROR at '" << err_pos_tok.GetName() << "': " << msg;
 	throw( CompilerException(s.str()) );
 }

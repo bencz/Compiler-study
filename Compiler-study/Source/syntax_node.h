@@ -17,7 +17,17 @@ public:
 	const SymType* GetCurrentArgType() const;
 	bool IsCurrentArfByRef() const;
 	virtual void Print(ostream& o, int offset = 0) const;
-	virtual const SymType* GetSymType() const;    
+	virtual const SymType* GetSymType() const;
+	virtual void GenerateValue(AsmCode& asm_code) const;
+};
+
+class NodeWriteCall: public SyntaxNode{
+private:
+	std::vector<SyntaxNode*> args;
+public:
+	void AddArg(SyntaxNode* arg);
+	virtual void GenerateValue(AsmCode& asm_code) const;
+	virtual const SymType* GetSymType() const;
 };
 
 class NodeBinaryOp: public SyntaxNode{
@@ -25,10 +35,14 @@ private:
 	Token token;
 	SyntaxNode* left;
 	SyntaxNode* right;
+	void FinGenForRelationalOp(AsmCode& asm_code) const;
+	void GenerateForInt(AsmCode& asm_code) const;
+	void GenerateForReal(AsmCode& asm_code) const;
 public:
 	NodeBinaryOp(const Token& name, SyntaxNode* left_, SyntaxNode* right_);
 	virtual void Print(ostream& o, int offset = 0) const;
-	virtual const SymType* GetSymType() const;    
+	virtual const SymType* GetSymType() const;
+	virtual void GenerateValue(AsmCode& asm_code) const;
 };
 
 class NodeUnaryOp: public SyntaxNode{
@@ -47,41 +61,48 @@ private:
 public:
 	NodeIntToRealConv(SyntaxNode* child_, SymType* real_type_);
 	virtual void Print(ostream& o, int offset = 0) const;
-	virtual const SymType* GetSymType() const;    
+	virtual const SymType* GetSymType() const;
+	virtual void GenerateValue(AsmCode& asm_code) const;
 };
 
 class NodeVar: public SyntaxNode{
 private:
-	SymVar* var;
+	const SymVar* var;
 public:
-	NodeVar(Symbol* var_);
-	NodeVar(SymVar* var_);
+	NodeVar(const SymVar* var_);
 	const SymVar* GetVar();
 	virtual const SymType* GetSymType() const;
 	virtual void Print(ostream& o, int offset = 0) const;
 	virtual bool IsLValue() const;
+	virtual void GenerateLValue(AsmCode& asm_code) const;
+	virtual void GenerateValue(AsmCode& asm_code) const;
 };
 
 class NodeArrayAccess: public SyntaxNode{
 private:
 	SyntaxNode* arr;
 	SyntaxNode* index;
+	void ComputeIndexToEax(AsmCode& asm_code) const;
 public:
 	NodeArrayAccess(SyntaxNode* arr_, SyntaxNode* index_);
 	virtual void Print(ostream& o, int offset = 0) const;
 	virtual const SymType* GetSymType() const;    
 	virtual bool IsLValue() const;
+	virtual void GenerateLValue(AsmCode& asm_code) const;
+	virtual void GenerateValue(AsmCode& asm_code) const; 
 };
 
 class NodeRecordAccess: public SyntaxNode{
 private:
 	const SyntaxNode* record;
-	const SymVar* field;
+	const SymVarLocal* field;
 public:
 	NodeRecordAccess(SyntaxNode* record_, Token field_);
 	virtual void Print(ostream& o, int offset = 0) const;
 	virtual const SymType* GetSymType() const;    
 	virtual bool IsLValue() const;
+	virtual void GenerateLValue(AsmCode& asm_code) const;
+	virtual void GenerateValue(AsmCode& asm_code) const; 
 };
 
 //---Statements---
@@ -95,14 +116,16 @@ public:
 	const SyntaxNode* GetLeft() const;
 	const SyntaxNode* GetRight() const;
 	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 class StmtBlock: public NodeStatement{
 private:
-	std::vector<SyntaxNode*> statements;
+	std::vector<NodeStatement*> statements;
 public:
-	void AddStatement(SyntaxNode* new_stmt);
-	virtual void Print(ostream& o, int offset = 0) const;    
+	void AddStatement(NodeStatement* new_stmt);
+	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 class StmtExpression: public NodeStatement{
@@ -111,6 +134,7 @@ private:
 public:
 	StmtExpression(SyntaxNode* expression);
 	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 class StmtFor: public NodeStatement{
@@ -123,6 +147,7 @@ private:
 public:
 	StmtFor(const SymVar* index_, SyntaxNode* init_value, SyntaxNode* last_value, bool is_inc, NodeStatement* body_);
 	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 class StmtWhile: public NodeStatement{
@@ -132,6 +157,7 @@ private:
 public:
 	StmtWhile(SyntaxNode* condition_, NodeStatement* body_);
 	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 class StmtUntil: public NodeStatement{
@@ -141,6 +167,7 @@ private:
 public:
 	StmtUntil(SyntaxNode* condition_, NodeStatement* body);
 	virtual void Print(ostream& o, int offset = 0) const;
+	void Generate(AsmCode& asm_code) const;
 };
 
 class StmtIf: public NodeStatement{
@@ -151,6 +178,7 @@ private:
 public:
 	StmtIf(SyntaxNode* condition_, NodeStatement* then_branch_, NodeStatement* else_branch_ = NULL);
 	virtual void Print(ostream& o, int offset = 0) const;
+	virtual void Generate(AsmCode& asm_code) const;
 };
 
 

@@ -1,0 +1,22 @@
+//операцию вывода нельзя выносить
+
+procedure Proc;
+begin
+  Write(5);
+end;
+
+var
+  i : Integer;
+
+begin
+  i := 2;
+  while (i) do begin
+    Write(5);
+    i := i - 1;
+  end;
+  i := i;
+  while (i) do begin
+    Proc;
+    i := i - 1;
+  end;
+end.

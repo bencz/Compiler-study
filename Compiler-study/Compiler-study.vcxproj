@@ -16,16 +16,19 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\parser.cpp" />
     <ClCompile Include="Source\scanner.cpp" />
+    <ClCompile Include="Source\statement.cpp" />
     <ClCompile Include="Source\statement_base.cpp" />
     <ClCompile Include="Source\sym_table.cpp" />
     <ClCompile Include="Source\syntax_node.cpp" />
     <ClCompile Include="Source\syntax_node_base.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\asm_commands.h" />
     <ClInclude Include="Source\exception.h" />
     <ClInclude Include="Source\generator.h" />
     <ClInclude Include="Source\parser.h" />
     <ClInclude Include="Source\scanner.h" />
+    <ClInclude Include="Source\statement.h" />
     <ClInclude Include="Source\statement_base.h" />
     <ClInclude Include="Source\sym_table.h" />
     <ClInclude Include="Source\syntax_node.h" />

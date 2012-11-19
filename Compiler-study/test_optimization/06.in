@@ -1,0 +1,8 @@
+//пустые циклы можно не генерировать
+begin
+  while 0 do;
+  
+  repeat
+    5;
+  until 1;
+end.

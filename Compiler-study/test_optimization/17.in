@@ -1,0 +1,13 @@
+//предрассчёт констант
+
+const 
+  n = 10;
+var
+  a, b: Integer;
+  arr: array[1..10] of Real;
+begin
+  b := n*10 div 5;
+  a = b + 2*2;
+  Write( 5 * 5 );
+  arr[10 - 9] := 10.0 / 2;
+end.

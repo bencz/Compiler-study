@@ -1,0 +1,34 @@
+//рекурсия
+var
+  a, b: Integer;
+
+procedure BB(i: Integer); forward;
+
+procedure AA(i : Integer);
+begin
+  if (i < 1) then Exit;
+  a := i;
+  BB(i - 1);
+end;
+
+procedure BB(i : Integer);
+begin
+  if (i < 1) then Exit;
+  b := i;
+  AA(i - 1);
+end;
+
+//генерируется
+procedure SEProc(i : Integer);
+begin
+  AA(i);
+end;
+
+begin
+  AA(5);
+  Writeln(a, b);
+  BB(5);
+  Writeln(a, b);
+  SEProc(5);
+  Writeln(a, b);
+end.

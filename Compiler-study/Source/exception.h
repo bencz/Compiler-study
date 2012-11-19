@@ -7,12 +7,12 @@
 
 class CompilerException: public std::exception{
 private:
-	char *err;
+    char *err;
 public:
-	CompilerException();
-	CompilerException(const std::string& msg);
-	~CompilerException() throw();
-	virtual const char* what() const throw();
+    CompilerException();
+    CompilerException(const std::string& msg);
+    ~CompilerException() throw();
+    virtual const char* what() const throw();
 };
 
 #endif

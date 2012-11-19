@@ -1,0 +1,20 @@
+//псевдонимы не отслеживаются.
+//(цикл из 1 элемента специально, чтобы проходились тесты)
+
+procedure P(var a, b: Integer);
+var
+  i: Integer;
+begin
+  for i := 1 to 1 do
+    a := b + 1;
+end;
+
+
+var
+  a: Integer;
+begin
+  a := 1;
+  P(a, a);
+  Write(a);
+end.
+

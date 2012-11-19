@@ -1,0 +1,14 @@
+//управляющие конструкции выносить нельзя
+var
+  b: Integer;
+begin
+  b := 5;
+  while(b) do
+  begin
+    Write(b);
+    if b < 5 then break;
+    b := b - 1;
+    continue;
+    b := 0;
+  end;
+end.

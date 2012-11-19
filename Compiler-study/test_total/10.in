@@ -1,0 +1,28 @@
+var
+l, r: Real;
+a, b: Real;
+ml, mr: Real;
+
+function F(x : Real): Real;
+begin
+    Result := (x - 2.5) * (x - 2.5);
+end; { F }
+
+begin
+    l := -100;
+    r := 100;
+    while r - l > 0.000001 do
+    begin
+        a := l + (r - l) / 3;
+        b := r - (r - l) / 3;
+        if F(r) > F(b) then mr := r
+        else mr := b;
+        if F(l) > F(a) then ml := l
+        else ml := a;
+        if F(ml) > F(mr) then
+            l := a
+        else
+            r := b;
+    end;
+    Write(l);
+end.

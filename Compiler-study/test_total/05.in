@@ -1,0 +1,31 @@
+type
+    arr = array[1..4] of Integer;
+    rec = record
+	a, b: arr;
+    end;
+    
+procedure Print(a: rec);
+var
+    i: Integer;
+begin
+    for i := 1 to 4 do
+	Write(a.a[i], ' ', a.b[i], '\n');
+end;
+
+var
+    a, b: rec;
+    i: Integer;
+
+begin
+    for i := 1 to 4 do
+	begin
+	    a.a[i] := 1;
+	    a.b[i] := 2;
+	end;
+    print(a);
+    b := a;
+    b.a := a.b;
+    print(b);
+    
+
+end.

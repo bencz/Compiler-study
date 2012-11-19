@@ -1,0 +1,16 @@
+//аналогично массивам, записи считаются за 1 переменную
+var
+  rec1, rec2 : record 
+    a, b: Integer;
+  end;
+  i, c: Integer;
+begin
+  rec1.b := 20;
+  for i := 1 to 2 do 
+  begin
+    rec1.a := 10;
+    rec2.b := 30;
+    c := rec1.b;
+  end;
+  Writeln(rec1.a, c);
+end.

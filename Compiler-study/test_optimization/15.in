@@ -1,0 +1,16 @@
+var
+  i, j, k : Integer;
+  a, b, c, d: array[1..10, 1..10] of Integer;
+  
+begin
+  for i := 1 to 10 do
+    begin
+      for j := 1 to 10 do
+        begin
+          d[0][0] := 4;
+          d[j][0] := 5;
+          d[i][0] := k;
+          //a[i][i] := d[0][9];
+        end;
+    end;
+end.

@@ -1,0 +1,46 @@
+type
+Data = record
+           key : Real;
+           pos : Integer;
+       end;
+DataArr = array[1..10] of Data;
+
+function Less(a, b : Data): Integer;
+begin
+    if (a.key > b.key) then
+        Result := 1
+    else
+        Result := 0;
+end;
+
+procedure Print(a : DataArr);
+var
+    i : Integer;
+begin
+    for i := 1 to 10 do
+        Write(a[i].key, ' => ', a[i].pos, '\n');
+end;
+
+var 
+    a    : DataArr;
+    i, j : Integer;
+    td   : Data;
+begin
+    for i := 1 to 10 do
+        begin
+            a[i].pos := i;
+            a[i].key := 11 - i;
+        end;
+    Write('before sort:\n');
+    Print(a);
+    for i := 2 to 10 do
+        for j := i downto 2 do
+            if Less(a[j - 1], a[j]) then
+                begin
+                    td := a[j];
+                    a[j] := a[j - 1];
+                    a[j - 1] := td;
+                end;
+    Write('after sort:\n');
+    Print(a);
+end.

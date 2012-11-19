@@ -1,0 +1,31 @@
+type Pere=array [1..10] of integer;
+
+var N,i,j : integer;
+    X     : Pere;
+
+procedure Swap(var a,b: integer);
+var c   : integer;
+begin
+    c:=a;
+    a:=b;
+    b:=c
+end;  
+
+procedure Generate(k:integer);
+var i,j : integer;
+begin   
+    if k=N then
+    begin for i:=1 to N do write(X[i]);writeln end
+    else
+        for j:=k+1 to N do
+        begin
+            Swap(X[k+1],X[j]);
+            Generate(k+1);
+            Swap(X[k+1],X[j])
+        end
+end;
+begin
+    n:=3;
+    for i:=1 to N do X[i]:=i;
+    Generate(0)
+end.

@@ -1,0 +1,74 @@
+type
+MatrT = array[1..10, 1..10] of Integer;
+
+procedure Init(var a : MatrT);
+var
+    i, j, n : Integer;
+begin
+    n := 1;
+    for i := 1 to 10 do
+        for j := 1 to 10 do
+            begin
+                a[i][j] := n;
+                n := n + 1;
+            end;
+end;
+
+function Transpose(a : MatrT): MatrT;
+var
+    i, j, tmp : Integer;
+begin
+    for i := 1 to 10 do
+        for j := 1 to 10 do
+            Result[i][j] := a[j][i];
+end;
+
+procedure Print(a : MatrT);
+var
+    i, j : Integer;
+begin
+    for i := 1 to 10 do
+        begin
+            for j := 1 to 10 do
+                Write(a[i][j], ' ');
+            Write('\n');
+        end;
+end;
+
+procedure Print1(a : MatrT);
+begin
+    Print(a);
+end;
+
+procedure Print2(a: MatrT);
+begin
+    Print1(a);
+end;
+
+function Copy(a : MatrT): MatrT;
+var
+    i, j :  Integer;
+begin
+    for i := 1 to 10 do
+        for j := 1 to 10 do
+            Result[i][j] := a[i][j];
+end; 
+
+var 
+    m1, m2 : MatrT;
+begin
+    Init(m1);
+    Write('initial:\n');
+    Print(m1);
+    m2 := m1;
+    Write('m2 := m1:\n');
+    Print(m2);
+    Write('copy(m1):\n');
+    Print(Copy(m1));
+    Write('transpose(m1):\n');
+    Print(Transpose(m1));
+    Write('Print1:\n');
+    Print1(m1);
+    Write('Print2:\n');
+    Print2(m1);
+end.

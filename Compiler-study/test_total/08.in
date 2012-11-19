@@ -1,0 +1,66 @@
+const
+    s = 1;
+    f = 10;
+type
+    ArrT = array [s..f] of Integer;
+    Data = Integer;
+
+procedure Swap(var a, b : Data);
+var
+    tmp : Data;
+begin
+    tmp := a;
+    a := b;
+    b := tmp;
+end;
+
+procedure Print(a: ArrT);
+var
+    i: Integer;
+begin
+    for i := s to f do
+        Write(a[i], ' ');
+    Writeln;
+end;
+
+function Partition(var a: ArrT; l, r: Integer): Integer;
+var
+    i, j : Integer;
+begin 
+    i := l;
+    j := r - 1;
+    while (i <= j) and (j > 0) and (i < r) do
+        if a[i] < a[r] then
+            i := i + 1
+        else
+            begin
+                Swap(a[i], a[j]);
+                j := j - 1;
+            end;
+    Swap(a[i], a[r]);
+    Result := i;
+end;
+
+procedure QSort(var a: ArrT; l, r: Integer);
+var
+    q: Integer;
+begin
+    if (l < r) then
+        begin
+            q := Partition(a, l, r);
+            QSort(a, l, q - 1);
+            QSort(a, q + 1, r);
+        end;
+end;
+
+
+var
+    a: ArrT;
+    i: Integer;
+begin
+    for i := s to f do
+        a[i] := (i*6180 + 19) mod 21;
+    Print(a);
+    QSort(a, s, f);
+    Print(a);
+end.

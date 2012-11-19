@@ -1,0 +1,14 @@
+//условный оператор, содержащий константное условие, можно заменить
+//на одну из веток
+begin
+  if (1) then Write('good')
+  else Write('bad');
+  
+  if (0) then Write('bad')
+  else Write('good');
+  
+  if (1) then Write('good');
+
+  if (0) then Write('bad');
+  
+end.

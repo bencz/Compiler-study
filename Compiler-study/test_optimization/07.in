@@ -1,5 +1,3 @@
-//операцию вывода нельзя выносить
-
 procedure Proc;
 begin
   Write(5);

@@ -1,4 +1,3 @@
-//рекурсия
 var
   a, b: Integer;
 
@@ -18,7 +17,6 @@ begin
   AA(i - 1);
 end;
 
-//генерируется
 procedure SEProc(i : Integer);
 begin
   AA(i);

@@ -1,4 +1,3 @@
-//вложенные циклы
 var
   i, j, k: Integer;
 begin
